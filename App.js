@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Alert } from "react-native";
 
 import * as Location from "expo-location";
 
@@ -8,19 +8,23 @@ import Loading from "./Loading";
 import Loding from "./Loading";
 
 export default class extends React.Component {
+  state = { isLoading: true };
   getLocation = async () => {
     try {
       await Location.requestPermissionsAsync();
-      const location = await Location.getCurrentPositionAsync();
-      console.log(location);
+      const {
+        coords: { latitude, longitude },
+      } = await Location.getCurrentPssitionAsync(); //send API
+      this.setState({ isLoading: false });
     } catch (error) {
-      console.log("fail");
+      Alert.alert("error");
     }
   };
   componentDidMount() {
     this.getLocation();
   }
   render() {
-    return <Loding />;
+    const { isLoading } = this.state;
+    return isLoading ? <Loding /> : null;
   }
 }
